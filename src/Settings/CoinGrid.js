@@ -30,7 +30,7 @@ function coinListObjectToArray(coinList) {
   return coins;
 }
 
-function getCoins(coinList) {
+function getCoins(coinList, topSection, favorites) {
   console.log(typeof coinList);
   let coinArray = coinListObjectToArray(coinList);
   coinArray.sort((a, b) =>
@@ -39,16 +39,19 @@ function getCoins(coinList) {
 
   //   return Object.keys(coinList).slice(0, 100);
   console.log(coinArray.slice(0, 100));
-  return coinArray.slice(0, 100);
+
+  return topSection
+    ? coinArray.filter((coin) => favorites.includes(coin.Symbol))
+    : coinArray.slice(0, topSection ? 10 : 100);
 }
 
-export default function () {
+export default function ({ topSection }) {
   return (
     <AppContext.Consumer>
-      {({ coinList }) => (
+      {({ coinList, favorites }) => (
         <CoinGridStyled>
-          {getCoins(coinList).map((coin) => (
-            <CoinTile coin={coin} />
+          {getCoins(coinList, topSection, favorites).map((coin) => (
+            <CoinTile coin={coin} topSection={topSection} />
           ))}
         </CoinGridStyled>
       )}

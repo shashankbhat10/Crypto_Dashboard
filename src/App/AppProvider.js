@@ -12,6 +12,7 @@ export class AppProvider extends React.Component {
       ...this.savedSettings(),
       setPage: this.setPage,
       confirmFavorites: this.confirmFavorites,
+      favorites: ["BTC", "ETH", "XMR", "DOGE"],
     };
   }
 
