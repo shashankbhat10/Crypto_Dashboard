@@ -31,9 +31,34 @@ export class AppProvider extends React.Component {
     return { favorites };
   }
 
+  prices = async () => {
+    let data = [];
+    for (let i = 0; i < this.state.favorites.length; i++) {
+      try {
+        let priceData = await cc.priceFull(this.state.favorites[i], "USD");
+        data.push(priceData);
+      } catch (err) {
+        console.error("Error while fetching price");
+      }
+    }
+    return data;
+  };
+
+  fetchPrices = async () => {
+    if (this.state.firstVisit) return;
+
+    let prices = await this.prices();
+    console.log(prices);
+    prices = prices.filter((price) => Object.keys(price).length);
+    console.log(prices);
+    this.setState({ prices });
+  };
+
   confirmFavorites = () => {
     console.log("Test");
-    this.setState({ firstVisit: false, page: "Dashboard" });
+    this.setState({ firstVisit: false, page: "Dashboard" }, () => {
+      this.fetchPrices();
+    });
 
     localStorage.setItem(
       "cryptodashboard",
@@ -43,6 +68,7 @@ export class AppProvider extends React.Component {
 
   componentDidMount = () => {
     this.fetchCoins();
+    this.fetchPrices();
   };
 
   fetchCoins = async () => {
@@ -50,7 +76,6 @@ export class AppProvider extends React.Component {
       "160e627fd1df50af667dbbd2959655aab59089c2d88650598fb86005ddee9558"
     );
     let coinList = (await cc.coinList()).Data;
-    console.log(coinList);
     this.setState({ coinList });
   };
 
