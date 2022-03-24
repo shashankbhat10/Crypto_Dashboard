@@ -6,7 +6,7 @@ import CoinTile from "./CoinTile";
 
 const CoinGridStyled = styled.div`
   display: grid;
-  grid-template-columns: repeat(5, 1fr);
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
   grid-gap: 15px;
   margin-top: 40px;
 `;
@@ -39,7 +39,9 @@ function getCoins(coinList, topSection, favorites) {
 
   //   return Object.keys(coinList).slice(0, 100);
   console.log(coinArray.slice(0, 100));
-
+  //   console.log(favorites);
+  //   console.log(coinArray.filter((coin) => favorites.includes(coin.Symbol)));
+  //   console.log(coinArray[0].Symbol === favorites[0]);
   return topSection
     ? coinArray.filter((coin) => favorites.includes(coin.Symbol))
     : coinArray.slice(0, topSection ? 10 : 100);

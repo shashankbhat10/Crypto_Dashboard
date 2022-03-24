@@ -4,6 +4,8 @@ const cc = require("cryptocompare");
 
 export const AppContext = React.createContext();
 
+const MAX_FAVORITES = 15;
+
 export class AppProvider extends React.Component {
   constructor(props) {
     super(props);
@@ -13,6 +15,8 @@ export class AppProvider extends React.Component {
       setPage: this.setPage,
       confirmFavorites: this.confirmFavorites,
       favorites: ["BTC", "ETH", "XMR", "DOGE"],
+      addCoin: this.addCoin,
+      removeCoin: this.removeCoin,
     };
   }
 
@@ -21,14 +25,19 @@ export class AppProvider extends React.Component {
     if (!dashboardData) {
       return { page: "Settings", firstVisit: true };
     }
-    return {};
+
+    let { favorites } = dashboardData;
+    return { favorites };
   }
 
   confirmFavorites = () => {
     console.log("Test");
     this.setState({ firstVisit: false, page: "Dashboard" });
 
-    localStorage.setItem("cryptodashboard", JSON.stringify({ test: "hello" }));
+    localStorage.setItem(
+      "cryptodashboard",
+      JSON.stringify({ favorites: this.state.favorites })
+    );
   };
 
   componentDidMount = () => {
@@ -45,6 +54,23 @@ export class AppProvider extends React.Component {
   };
 
   setPage = (page) => this.setState({ page });
+
+  addCoin = (coinKey) => {
+    let favorites = [...this.state.favorites];
+    if (favorites.length < MAX_FAVORITES && !favorites.includes(coinKey)) {
+      favorites.push(coinKey);
+      this.setState({ favorites });
+    }
+  };
+
+  removeCoin = (coinKey) => {
+    let favorites = [...this.state.favorites];
+
+    if (favorites.length !== 0 && favorites.includes(coinKey)) {
+      favorites.splice(favorites.indexOf(coinKey), 1);
+      this.setState({ favorites });
+    }
+  };
 
   render() {
     return (
