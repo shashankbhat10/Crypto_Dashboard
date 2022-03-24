@@ -17,6 +17,7 @@ export class AppProvider extends React.Component {
       favorites: ["BTC", "ETH", "XMR", "DOGE"],
       addCoin: this.addCoin,
       removeCoin: this.removeCoin,
+      setFilteredCoins: this.setFilteredCoins,
     };
   }
 
@@ -71,6 +72,8 @@ export class AppProvider extends React.Component {
       this.setState({ favorites });
     }
   };
+
+  setFilteredCoins = (filteredCoins) => this.setState({ filteredCoins });
 
   render() {
     return (
