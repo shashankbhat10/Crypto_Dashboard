@@ -63,7 +63,7 @@ export default function ({ topSection }) {
         <CoinGridStyled>
           {getCoins(coinList, topSection, favorites, filteredCoins).map(
             (coin) => (
-              <CoinTile coin={coin} topSection={topSection} />
+              <CoinTile coin={coin} topSection={topSection} key={coin.Symbol} />
             )
           )}
         </CoinGridStyled>

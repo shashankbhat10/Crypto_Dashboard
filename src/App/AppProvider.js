@@ -14,10 +14,10 @@ export class AppProvider extends React.Component {
       ...this.savedSettings(),
       setPage: this.setPage,
       confirmFavorites: this.confirmFavorites,
-      favorites: ["BTC", "ETH", "XMR", "DOGE"],
       addCoin: this.addCoin,
       removeCoin: this.removeCoin,
       setFilteredCoins: this.setFilteredCoins,
+      setCurrentFavorite: this.setCurrentFavorite,
     };
   }
 
@@ -27,8 +27,8 @@ export class AppProvider extends React.Component {
       return { page: "Settings", firstVisit: true };
     }
 
-    let { favorites } = dashboardData;
-    return { favorites };
+    let { favorites, currentFavorite } = dashboardData;
+    return { favorites, currentFavorite };
   }
 
   prices = async () => {
@@ -48,21 +48,22 @@ export class AppProvider extends React.Component {
     if (this.state.firstVisit) return;
 
     let prices = await this.prices();
-    console.log(prices);
     prices = prices.filter((price) => Object.keys(price).length);
-    console.log(prices);
     this.setState({ prices });
   };
 
   confirmFavorites = () => {
-    console.log("Test");
-    this.setState({ firstVisit: false, page: "Dashboard" }, () => {
-      this.fetchPrices();
-    });
+    let currentFavorite = this.state.favorites[0];
+    this.setState(
+      { firstVisit: false, page: "Dashboard", currentFavorite },
+      () => {
+        this.fetchPrices();
+      }
+    );
 
     localStorage.setItem(
       "cryptodashboard",
-      JSON.stringify({ favorites: this.state.favorites })
+      JSON.stringify({ favorites: this.state.favorites, currentFavorite })
     );
   };
 
@@ -99,6 +100,17 @@ export class AppProvider extends React.Component {
   };
 
   setFilteredCoins = (filteredCoins) => this.setState({ filteredCoins });
+
+  setCurrentFavorite = (symbol) => {
+    this.setState({ currentFavorite: symbol });
+    localStorage.setItem(
+      "cryptodashboard",
+      JSON.stringify({
+        ...JSON.parse(localStorage.getItem("cryptodashboard")),
+        currentFavorite: symbol,
+      })
+    );
+  };
 
   render() {
     return (
