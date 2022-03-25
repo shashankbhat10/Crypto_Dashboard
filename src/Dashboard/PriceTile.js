@@ -2,11 +2,22 @@ import React from "react";
 import styled, { css } from "styled-components";
 import { AppContext } from "../App/AppProvider";
 import { CoinHeaderGridStyled } from "../Settings/CoinHeaderGrid";
+import CoinImage from "../Shared/CoinImage";
 import { SelectableTile } from "../Shared/CoinTile";
 import { fontSize3, fontSizeBig, greenBoxShadow } from "../Shared/Styles";
 
 const TickerPrice = styled.div`
   ${fontSizeBig};
+`;
+
+const TickerWithImage = styled.div`
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  margin-top: 5px;
+`;
+
+const StyledImage = styled.div`
+  justify-self: right;
 `;
 
 const ChangePct = styled.div`
@@ -33,8 +44,13 @@ const PriceTileStyled = styled(SelectableTile)`
     `}
 `;
 
-const PriceTile = ({ symbol, data, currentFavorite, setCurrentFavorite }) => {
-  console.log("currentFavorite", currentFavorite);
+const PriceTile = ({
+  symbol,
+  data,
+  currentFavorite,
+  setCurrentFavorite,
+  coin,
+}) => {
   let price = data.PRICE.toString();
   price = price.slice(0, price.indexOf(".") + 3);
   return (
@@ -46,13 +62,18 @@ const PriceTile = ({ symbol, data, currentFavorite, setCurrentFavorite }) => {
         <span style={{ justifySelf: "right", fontWeight: "10px" }}>
           <ChangePct red={data.CHANGEPCT24HOUR < 0}>
             <b>
-              {(data.CHANGEPCT24HOUR < 0 ? "-" : "+") +
+              {(data.CHANGEPCT24HOUR > 0 ? "+" : "") +
                 (data.CHANGEPCT24HOUR + "").slice(0, 4)}
             </b>
           </ChangePct>
         </span>
       </CoinHeaderGridStyled>
-      <TickerPrice>${price}</TickerPrice>
+      <TickerWithImage>
+        <TickerPrice>${price}</TickerPrice>
+        <StyledImage>
+          <CoinImage coin={coin} />
+        </StyledImage>
+      </TickerWithImage>
     </PriceTileStyled>
   );
 };
@@ -88,15 +109,19 @@ export default function ({ price, index }) {
   let TileClass = PriceTile;
   return (
     <AppContext.Consumer>
-      {({ currentFavorite, setCurrentFavorite }) => (
-        <TileClass
-          symbol={symbol}
-          data={data}
-          currentFavorite={currentFavorite === symbol}
-          setCurrentFavorite={() => setCurrentFavorite(symbol)}>
-          {symbol} {data.PRICE}
-        </TileClass>
-      )}
+      {({ coinList, currentFavorite, setCurrentFavorite }) => {
+        let coin = coinList[symbol];
+        return (
+          <TileClass
+            symbol={symbol}
+            data={data}
+            currentFavorite={currentFavorite === symbol}
+            setCurrentFavorite={() => setCurrentFavorite(symbol)}
+            coin={coin}>
+            {symbol} {data.PRICE}
+          </TileClass>
+        );
+      }}
     </AppContext.Consumer>
   );
 }

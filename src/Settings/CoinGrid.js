@@ -26,7 +26,6 @@ function coinListObjectToArray(coinList) {
   //   console.log(undefKey);
   //   console.log(coins.length);
   //   console.log(coins.slice(0, 100));
-
   return coins;
 }
 
@@ -41,7 +40,10 @@ function getCoins(coinList, topSection, favorites, filteredCoins) {
 
   //   return Object.keys(coinList).slice(0, 100);
   //   console.log(coinArray.slice(0, 100));
-
+  console.log(coinArray[0]);
+  // console.log(
+  //   coinArray.filter((coin) => coin.IsUsedInDefi && coin.IsUsedInDefi !== 0)[1]
+  // );
   let filteredCoinsArray = [];
   if (filteredCoins) {
     filteredCoinsArray = coinListObjectToArray(filteredCoins).map(

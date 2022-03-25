@@ -5,7 +5,11 @@ import PriceTile from "./PriceTile";
 
 const PriceGrid = styled.div`
   display: grid;
-  grid-template-columns: repeat(5, 1fr);
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  overflow-x: auto;
+  grid-auto-flow: column;
+  grid-auto-columns: minmax(250px, 1fr);
+  padding: 10px 2px;
   grid-gap: 15px;
   margin-top: 35px;
 `;
